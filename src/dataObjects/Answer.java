@@ -1,5 +1,8 @@
 package dataObjects;
 
+/**
+ * Represents an answer to a multiple choice question
+ */
 public class Answer {
     private final String answer;
     private final boolean correct;

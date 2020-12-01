@@ -3,6 +3,9 @@ package dataObjects;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a Question that can be created and played
+ */
 public class Question {
     private String question;
     private final List<Answer> answers;

@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 import service.progress.PlayQuestionProgress;
 
-import java.nio.channels.Channel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -15,6 +14,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
+/**
+ * Handles playing questions
+ */
 public class PlayQuestionService {
     private static final PlayQuestionService instance = new PlayQuestionService();
 
@@ -51,7 +53,7 @@ public class PlayQuestionService {
             return;
         }
         if(correct){
-            praiseUserForCorrectAnswer(author, channel);
+            praiseUserForCorrectAnswerAndAbortQuestion(questionProgressInChannel, author, channel);
         }else {
             informChosenAnswerIsWrong(author, channel);
         }
@@ -64,12 +66,26 @@ public class PlayQuestionService {
                 """.formatted(author.getName())).queue();
     }
 
-    private void praiseUserForCorrectAnswer(User author, MessageChannel channel) {
+    /**
+     *
+     * @param questionProgressInChannel the object holding info about the currently played question, it needs to be removed from the list of currently played questions
+     * @param author the author of the answer that was correct
+     * @param channel the channel the user needs to be informed in about his success
+     */
+    private void praiseUserForCorrectAnswerAndAbortQuestion(PlayQuestionProgress questionProgressInChannel, User author, MessageChannel channel) {
         channel.sendMessage("""
                 %s, congratulations your answer was right.
                 """.formatted(author.getName())).queue();
+        currentlyRunningQuestions.remove(questionProgressInChannel);
     }
 
+    /**
+     *
+     * @param indexOfAnswerChosen the index of the question the user selected as an answer
+     * @param questionProgressInChannel the object holding info about the played question
+     * @param channel the channel the conversation is happening in
+     * @return true if the answer is correct false otherwise or null of index is invalid
+     */
     private Boolean isAnswerCorrect(Integer indexOfAnswerChosen, PlayQuestionProgress questionProgressInChannel, MessageChannel channel) {
         List<Answer> answers = questionProgressInChannel.getQuestion().getAnswers();
         if(indexOfAnswerChosen<0 || answers.size()<= indexOfAnswerChosen){
@@ -79,6 +95,12 @@ public class PlayQuestionService {
         return answers.get(indexOfAnswerChosen).isCorrect();
     }
 
+    /**
+     *
+     * @param contentRaw the message from the user
+     * @param channel the channel the conversation is happening in
+     * @return the index of the answer selected or null if message does not have the proper format
+     */
     private Integer getIndexOfAnswerChosen(String contentRaw, MessageChannel channel) {
         Pattern patterOfAnswerCommand = Pattern.compile("!answer (\\d+)");
         Matcher matcher = patterOfAnswerCommand.matcher(contentRaw);
@@ -102,6 +124,11 @@ public class PlayQuestionService {
         currentlyRunningQuestions.add(new PlayQuestionProgress(randomQuestion, channel));
     }
 
+    /**
+     * Sends a message to the user outlining the question and possible answers
+     * @param channel the channel the conversation is happening in
+     * @param randomQuestion the question that is asked
+     */
     private void askQuestion(MessageChannel channel, Question randomQuestion) {
         String message= """
                 You have asked for a question. Here is your question: %s
@@ -141,6 +168,11 @@ public class PlayQuestionService {
         currentlyRunningQuestions.remove(questionProgressInChannel);
     }
 
+    /**
+     *
+     * @param channel the channel in which we are looking in
+     * @return a PlayQuestionProgress object containing info about the currently played question in said channel or null if no question is currently played
+     */
     private PlayQuestionProgress getQuestionProgressInChannel(MessageChannel channel) {
         for (PlayQuestionProgress playQuestionProgress:
              currentlyRunningQuestions) {

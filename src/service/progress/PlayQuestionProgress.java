@@ -6,6 +6,9 @@ import net.dv8tion.jda.api.entities.User;
 
 import java.nio.channels.Channel;
 
+/**
+ * Represents data belonging to a question being played
+ */
 public class PlayQuestionProgress {
 
     /**

@@ -10,11 +10,14 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
-    The here used pattern is called "Singelton". It is used when there is only one instance ever created.
+/**
+ * Stores questions in a file so that they are persisted over reboots
  */
 public class QuestionStorageService {
     private static final String STORAGE_FILE_NAME = "storage.json";
+    /**
+     * A file called storage.json in the current working directory(normally where it is started) of the program
+     */
     private static final Path STORAGE_FILE_PATH = Path.of(STORAGE_FILE_NAME);
 
     private static final QuestionStorageService instance = new QuestionStorageService();
@@ -34,6 +37,9 @@ public class QuestionStorageService {
         }
     }
 
+    /**
+     * reads the storage.json file and uses its content to fill the questions list
+     */
     private void readQuestionsFromFile() {
         try {
             questions= gson.fromJson(Files.readString(STORAGE_FILE_PATH), new TypeToken<ArrayList<Question>>(){}.getType());
@@ -44,6 +50,9 @@ public class QuestionStorageService {
         }
     }
 
+    /**
+     * Uses the questions list and writes its data into the storage.json file
+     */
     public void storeQuestions(){
         String questionsAsString = gson.toJson(questions);
         try {

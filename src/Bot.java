@@ -1,21 +1,18 @@
-import dataObjects.Question;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.EventListener;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.PlayQuestionService;
 import service.QuestionCreationService;
-import service.progress.PlayQuestionProgress;
 
 import javax.security.auth.login.LoginException;
 
+/**
+ * The main class where it all gets started. Messages are received and forwarded depending on their content.
+ */
 public class Bot extends ListenerAdapter {
     private static final Logger logger = LoggerFactory.getLogger(Bot.class);
 

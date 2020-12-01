@@ -5,10 +5,12 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
 
-import java.nio.channels.Channel;
 
+/**
+ * Represents data belonging to a question being created
+ */
 public class QuestionCreationProgress {
-    public enum State{
+    public enum State {
         /**
          * The user issued the !createQuestion command and is now being asked for the name of the question.
          */
