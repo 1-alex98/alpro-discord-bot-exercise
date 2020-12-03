@@ -17,7 +17,7 @@ public class Bot extends ListenerAdapter {
     private static final Logger logger = LoggerFactory.getLogger(Bot.class);
 
     public static void main(String[] args) throws LoginException {
-        JDABuilder jdaBuilder = JDABuilder.createDefault("NzgzMzYzMjU3MDg3MTY0NDQ2.X8Zp4g.kZQExzQpeAlXIEbHNOTPadpuGM0");
+        JDABuilder jdaBuilder = JDABuilder.createDefault("Nzg0MTIwMTQ1MTU2NTA1NjYw.X8kqyg.JV8LqVoMEevCrloUckwvNskDK10");
 
         JDA build = jdaBuilder.build();
         build.addEventListener(new Bot());
@@ -30,9 +30,7 @@ public class Bot extends ListenerAdapter {
             handleMessage(event);
         }catch (Exception e){
             logger.warn("Could not process message", e);
-            event.getMessage().getChannel().sendMessage("""
-                    Unexpected error occurred!
-                    """).queue();
+            event.getMessage().getChannel().sendMessage("Unexpected error occurred!").queue();
 
         }
     }
@@ -47,7 +45,7 @@ public class Bot extends ListenerAdapter {
                     .abort(message);
             PlayQuestionService
                     .getInstance()
-                    .abort(message);
+                    .abort(message.getChannel());
         } else if (content.equals("!createQuestion")) {
             QuestionCreationService
                     .getInstance()

@@ -40,7 +40,7 @@ public class PlayQuestionService {
      */
     public void answerCommandCalled(String contentRaw, MessageChannel channel, User author) {
         Integer indexOfAnswerChosen = getIndexOfAnswerChosen(contentRaw, channel);
-        if(indexOfAnswerChosen == null){
+        if(indexOfAnswerChosen == null) {
             return;
         }
         PlayQuestionProgress questionProgressInChannel = getQuestionProgressInChannel(channel);
@@ -61,9 +61,7 @@ public class PlayQuestionService {
     }
 
     private void informChosenAnswerIsWrong(User author, MessageChannel channel) {
-        channel.sendMessage("""
-                %s, we are sorry your answer was wrong.
-                """.formatted(author.getName())).queue();
+        channel.sendMessage(String.format("%s, we are sorry your answer was wrong.\nKeep guessing :))", author.getName())).queue();
     }
 
     /**
@@ -73,9 +71,7 @@ public class PlayQuestionService {
      * @param channel the channel the user needs to be informed in about his success
      */
     private void praiseUserForCorrectAnswerAndAbortQuestion(PlayQuestionProgress questionProgressInChannel, User author, MessageChannel channel) {
-        channel.sendMessage("""
-                %s, congratulations your answer was right.
-                """.formatted(author.getName())).queue();
+        channel.sendMessage(String.format("%s, congratulations your answer was right.", author.getName())).queue();
         currentlyRunningQuestions.remove(questionProgressInChannel);
     }
 
@@ -89,7 +85,7 @@ public class PlayQuestionService {
     private Boolean isAnswerCorrect(Integer indexOfAnswerChosen, PlayQuestionProgress questionProgressInChannel, MessageChannel channel) {
         List<Answer> answers = questionProgressInChannel.getQuestion().getAnswers();
         if(indexOfAnswerChosen<0 || answers.size()<= indexOfAnswerChosen){
-            channel.sendMessage("There is no answer with index %d".formatted(indexOfAnswerChosen+1)).queue();
+            channel.sendMessage(String.format("There is no answer with index %d", indexOfAnswerChosen+1)).queue();
             return null;
         }
         return answers.get(indexOfAnswerChosen).isCorrect();
@@ -116,6 +112,7 @@ public class PlayQuestionService {
      * @param channel the channel the message was sent in
      */
     public void questionCommandCalled(MessageChannel channel) {
+
         Question randomQuestion = getRandomQuestion(channel);
         if(randomQuestion==null){
             return;
@@ -130,16 +127,11 @@ public class PlayQuestionService {
      * @param randomQuestion the question that is asked
      */
     private void askQuestion(MessageChannel channel, Question randomQuestion) {
-        String message= """
-                You have asked for a question. Here is your question: %s
-                You have the following possibilities to answer:
-                """.formatted(randomQuestion.getQuestion());
+        String message= String.format("You have asked for a question. Here is your question:\n%s \n You have the following possibilities to answer: \n", randomQuestion.getQuestion());
         List<Answer> answers = randomQuestion.getAnswers();
         for (int i = 0; i < answers.size(); i++) {
             Answer answer = answers.get(i);
-            message += """
-                    Write !answer %d to answer: %s
-                    """.formatted(i+1, answer.getAnswer());
+            message += String.format("Write !answer %d \n to answer: %s \n", i+1, answer.getAnswer());
         }
         channel.sendMessage(message).queue();
     }
@@ -161,10 +153,10 @@ public class PlayQuestionService {
 
     /**
      * Somebody wants to abort. Let's see if we have a question running in the channel. If so we want to delete it.
-     * @param message the message that contains an !abort
+     * @param channel the channel that contains an !abort
      */
-    public void abort(Message message) {
-        PlayQuestionProgress questionProgressInChannel = getQuestionProgressInChannel(message.getChannel());
+    public void abort(MessageChannel channel) {
+        PlayQuestionProgress questionProgressInChannel = getQuestionProgressInChannel(channel);
         currentlyRunningQuestions.remove(questionProgressInChannel);
     }
 

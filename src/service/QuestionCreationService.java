@@ -43,12 +43,7 @@ public class QuestionCreationService {
     }
 
     private void informUserAboutProcessOfCreatingAQuestion(MessageChannel channel) {
-        String message =
-                """
-                You are about to create a question. You can create a multiple choice question, that can then be played by player using the !question command.
-                You can cancel the with the !abort command.
-                Please first tell us what the question text should be:     
-                """;
+        String message = "You are about to create a question. You can create a multiple choice question, that can then be played by player using the !question command. You can cancel the with the !abort command. Please first tell us what the question text should be: ";
         channel.sendMessage(message).queue();
     }
 
@@ -77,11 +72,7 @@ public class QuestionCreationService {
      */
     private void saveQuestion(QuestionCreationProgress questionBeingCreatedInChannelByUser, MessageChannel channel) {
         if(!hasOneCorrectAnswer(questionBeingCreatedInChannelByUser)){
-            channel.sendMessage("""
-                    You need at least one correct answer. Just add one now and try to save afterwards.
-                    E.g. right Neil Armstrong
-                    Let's go:
-                    """);
+            channel.sendMessage("You need at least one correct answer.\nJust add one now and try to save afterwards. E.g. right Neil Armstrong\nLet's go: ").queue();
             return;
         }
         QuestionStorageService.getInstance()
@@ -111,12 +102,7 @@ public class QuestionCreationService {
      */
     private void processAnswerForQuestionName(QuestionCreationProgress questionBeingCreatedInChannelByUser, String contentRaw, MessageChannel channel) {
         questionBeingCreatedInChannelByUser.getQuestion().setQuestion(contentRaw);
-        channel.sendMessage("""
-                Your question text has been noted. Please add some possible answers.
-                Please now enter the first answer by first writing wrong or right followed by the text for the answer.
-                E.g. 'right Neil Armstrong'
-                Enter your answer now:
-                """).queue();
+        channel.sendMessage("Your question text has been noted. Please add some possible answers.\nPlease now enter the first answer by first writing wrong or right followed by the text for the answer.\nE.g. 'right Neil Armstrong' Enter your answer now: ").queue();
         questionBeingCreatedInChannelByUser.setState(QuestionCreationProgress.State.ASKED_FOR_ANSWER);
     }
 
@@ -140,13 +126,7 @@ public class QuestionCreationService {
      * @param channel where we send the message
      */
     private void askUserForTheNextAnswer(MessageChannel channel) {
-        channel.sendMessage("""
-                Your answer text has been noted.
-                Please now enter the next answer by first writing wrong or right followed by the text for the answer.
-                If you are finished answer !save instead.
-                E.g. 'right Neil Armstrong'
-                Enter your answer now:
-                """).queue();
+        channel.sendMessage("Your answer text has been noted. Please now enter the next answer by first writing wrong or right followed by the text for the answer.\nIf you are finished answer !save instead.E.g. 'right Neil Armstrong'Enter your answer now:").queue();
     }
 
     /**
